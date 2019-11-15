@@ -24,23 +24,29 @@ morse('w','.--').
 morse('x','-..-').
 morse('y','-.--').
 morse('z','--..').
-convertToMorse([],[]).
-convertToMorse(Text,Morse):-morse(Text,Morse).
-convertToMorse([H|T],[Curr|Prev]):-morse(H,Curr),convertToMorse(T,Prev).
-convertToMorse(Text,Morse):-
-    atom_chars(Text, CharList),
-    convertToMorse(CharList,Morse).
-convertToMorse(CharList,Morse):-
-    atom_chars(Morse, MorseList),
-    convertToMorse(CharList,MorseList).
 
-smorseToText('','').
-smorseToText(Morse,Text):-morse(Text,Morse).
-smorseToText(Smorse,[Text|Prev]):-
-    sub_string(Smorse,0,Length,_,Substring),
-    morse(Text,Substring),
-    sub_string(Smorse,Length,_,0,Next),
-    smorseToText(Next,Prev).
+convertList([],[]).
+convertList(Text,Morse):-morse(Text,Morse).
+convertList([H|T],[Curr|Prev]):-morse(H,Curr),convertList(T,Prev).
+
+textToMorse(Text,Morse):-
+    atom_chars(Text,TextList),
+    convertList(TextList, MorseList),
+    atomic_list_concat(MorseList, Morse).
+
+morseToText(Curr,Morse):-
+    sub_atom(Morse,0,Length,_,CurrMorse),
+    morse(Curr,CurrMorse),
+    sub_atom(Morse,Length,0,0,'').
+morseToText(Sum,Morse):-
+    sub_atom(Morse,0,Length,_,CurrMorse),
+    morse(Curr,CurrMorse),
+    sub_atom(Morse,Length,_,0,PrevMorse),
+    morseToText(Prev,PrevMorse),
+    atom_concat(Curr,Prev,Sum).
+
+
+
 
 
 
